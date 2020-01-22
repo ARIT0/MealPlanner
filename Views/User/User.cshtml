@@ -1,0 +1,66 @@
+﻿<!--
+@{
+    ViewData["Title"] = "User";
+}
+    -->
+<%@ Page Language="C#" AutoEventWireup="True" CodeBehind="Index.aspx.cs" Inherits="User_Registration.Index" %>
+<!DOCTYPE html>
+
+<h1>User Sign In</h1>
+
+
+<form id="registration" runat="server">
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <asp:Label Text="First Name" runat="server" />
+                </td>
+                <td colspan="2">
+                    <asp:Textbox ID="txtFirstName" runat="server" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label Text="Last Name" runat="server" />
+                </td>
+                <td colspan="2">
+                    <asp:Textbox ID="txtLastName" runat="server" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label Text="Username" runat="server" />
+                </td>
+                <td colspan="2">
+                    <asp:Textbox ID="txtUsername" runat="server" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label Text="Confirm Password" runat="server" />
+                </td>
+                <td colspan="2">
+                    <asp:Textbox ID="txtPassword" /><input id="Password1" TextMode="password" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label Text="Password" runat="server" />
+                </td>
+                <td colspan="2">
+                    <asp:Textbox ID="txtConfirmPassword" /><input id="Password1" TextMode="password" /> <!--Or type password-->
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <asp:Button Text="Submit" id="btnSubmit" runat="server" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+
