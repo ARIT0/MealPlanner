@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using MealPlanner.Models;
 
 namespace MealPlanner
 {
@@ -23,6 +25,7 @@ namespace MealPlanner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationUser>(options => options.UseSqlServer(Configuration.GetConnectionString("Myconnection")));
             services.AddControllersWithViews();
         }
 
@@ -50,8 +53,10 @@ namespace MealPlanner
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=UserRegistration}/{action=Create}/{id?}");
             });
         }
     }
 }
+
+//pattern: "{controller=Home}/{action=Index}/{id?}");

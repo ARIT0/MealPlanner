@@ -16,7 +16,11 @@ namespace MealPlanner.Controllers
         {
             return View();
         }
-
+        //TODO link to new user form
+        /*public IActionResult NewUser()
+        {
+            return View()
+        }*/
         public IActionResult Privacy()
         {
             return View();
