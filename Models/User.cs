@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MealPlanner.Models
 {
@@ -21,6 +22,7 @@ namespace MealPlanner.Models
 
         [Required(ErrorMessage = "Please Enter a Username...")]
         [Display(Name ="User Name")]
+        //[Index(IsUnique = true)]
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Please Enter a Password...")]

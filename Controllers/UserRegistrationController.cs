@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MealPlanner.Models;
+using MealPlanner.Data;
 
 namespace MealPlanner.Controllers
 {
     public class UserRegistrationController : Controller
     {
-        private readonly ApplicationUser _auc;
+        private readonly ApplicationDbContext _auc;
 
-        public UserRegistrationController(ApplicationUser auc)
+        public UserRegistrationController(ApplicationDbContext auc)
         {
             _auc = auc;
         }

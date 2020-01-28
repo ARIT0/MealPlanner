@@ -1,0 +1,53 @@
+﻿@model IEnumerable<MealPlanner.Models.RecipeClass>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RecName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Calories)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TagId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Calories)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TagId.TagName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RecId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

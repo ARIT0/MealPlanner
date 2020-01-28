@@ -9,7 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using MealPlanner.Models;
+using MealPlanner.Data;
+
 
 namespace MealPlanner
 {
@@ -25,8 +26,12 @@ namespace MealPlanner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationUser>(options => options.UseSqlServer(Configuration.GetConnectionString("Myconnection")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Myconnection")));
             services.AddControllersWithViews();
+
+            //services.AddDbContext<Login>(options => options.UseSqlServer(Configuration.GetConnectionString("Myconnection")));
+            
+            // if I were to use identity services.ConfigureApplicationCookie(option => option.LoginPath = "/Home/Index");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,17 +51,19 @@ namespace MealPlanner
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=UserRegistration}/{action=Create}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    
             });
         }
     }
 }
 
-//pattern: "{controller=Home}/{action=Index}/{id?}");
+//pattern: "{controller=UserRegistration}/{action=Create}/{id?}");
