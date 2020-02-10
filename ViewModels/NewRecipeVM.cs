@@ -8,6 +8,7 @@ namespace MealPlanner.ViewModels
 {
     public class NewRecipeVM
     {
+        
         [Required(ErrorMessage = "Please Enter a Recipe Name")]
         [Display(Name = "Recipe Name")]
         public string RecName { get; set; }

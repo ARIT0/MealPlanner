@@ -4,14 +4,16 @@ using MealPlanner.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MealPlanner.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200202015746_freshKeys")]
+    partial class freshKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,7 +110,7 @@ namespace MealPlanner.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TagsId")
+                    b.Property<int>("TagId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -116,7 +118,7 @@ namespace MealPlanner.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TagsId")
+                    b.HasIndex("TagId")
                         .IsUnique();
 
                     b.HasIndex("UserId")
@@ -175,7 +177,7 @@ namespace MealPlanner.Migrations
 
             modelBuilder.Entity("MealPlanner.Models.IngQuantClass", b =>
                 {
-                    b.HasOne("MealPlanner.Models.IngredientsClass", "IngredientsClass")
+                    b.HasOne("MealPlanner.Models.IngredientsClass", "Ingredient")
                         .WithOne("IngQuantClass")
                         .HasForeignKey("MealPlanner.Models.IngQuantClass", "IngredientsClassId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -203,9 +205,9 @@ namespace MealPlanner.Migrations
 
             modelBuilder.Entity("MealPlanner.Models.RecipeClass", b =>
                 {
-                    b.HasOne("MealPlanner.Models.TagsClass", "TagsClass")
+                    b.HasOne("MealPlanner.Models.TagsClass", "Tag")
                         .WithOne("RecipeClass")
-                        .HasForeignKey("MealPlanner.Models.RecipeClass", "TagsId")
+                        .HasForeignKey("MealPlanner.Models.RecipeClass", "TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

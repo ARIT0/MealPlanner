@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MealPlanner.Models
 {
@@ -22,7 +23,7 @@ namespace MealPlanner.Models
 
         [Required(ErrorMessage = "Please Enter a Username...")]
         [Display(Name ="User Name")]
-        //[Index(IsUnique = true)]
+        //[Index(IsUnique = true)] This was implemented in sql statement
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Please Enter a Password...")]
@@ -35,5 +36,10 @@ namespace MealPlanner.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password")]
         public string Confirmpwd { get; set; }
+
+        public ICollection<RecipeClass> Recipes { get; set; }
+        //public RecipeClass RecipeClass { get; set; }
+
+
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MealPlanner.Models;
 using Microsoft.EntityFrameworkCore;
+using MealPlanner.ViewModels;
 //using System.Data.Entity;
 
 
@@ -25,16 +26,26 @@ namespace MealPlanner.Data
         {
 
         }
-
+        
+        //public DbSet<MealPlanner.ViewModels.NewRecipeVM> NewRecipeVM { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<TagsClass>() 
+                .HasIndex(c => c.TagName ).IsUnique();
+                     
+        }
+
+        /*  
+              modelBuilder.Entity<RecipeClass>()
+                .HasKey(c => new { c.RecId });
+
             modelBuilder.Entity<IngQuantClass>() //TODO Change to IG save and add to a new migration
                 .HasKey(c => new { c.RecIdfk, c.IngIdfk });
 
             modelBuilder.Entity<InstructionsClass>() 
                 .HasNoKey();
-
-        }
+        */
 
     }
 }

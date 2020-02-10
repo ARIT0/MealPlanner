@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using MealPlanner.Models;
 using MealPlanner.Data;
 using MealPlanner.ViewModels;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace MealPlanner.Controllers
 {
@@ -20,6 +24,7 @@ namespace MealPlanner.Controllers
             context = dbContext;
         }
 
+               
         //GET: All Recipes
         public IActionResult Index()
         {
@@ -28,53 +33,71 @@ namespace MealPlanner.Controllers
             return View(recipeIndex); //TODO Link to all recipes RecipeIndex
         }
 
-
-        public IActionResult AddRecipe()
+        
+        public IActionResult Add()
         {
             NewRecipeVM addRecipeViewModel = new NewRecipeVM();
             return View(addRecipeViewModel);
         }
         
+        //[Authorize] 
         [HttpPost]
-        public IActionResult AddRecipe(NewRecipeVM obj)
+        public IActionResult Add(NewRecipeVM obj)
         {
+            int? uid = HttpContext.Session.GetInt32("UID");
+            int uid2 = uid.Value;
+
             if (ModelState.IsValid)
             {
-                RecipeClass r = new RecipeClass
-                {
-                    RecName = obj.RecName,
-                    //Calories = obj.Calories
-                };
-
-                InstructionsClass inst = new InstructionsClass
-                {
-                    StepOrder = obj.StepOrder,
-                    Instruct = obj.Instruct,
-                    //RecId = obj.RecId
-                };
-
-                IngredientsClass ing = new IngredientsClass
-                { 
-                    IngName = obj.IngName,
-                    UM = obj.UM
-                };
-
-                IngQuantClass ingQ = new IngQuantClass
-                {
-                    Quantity = obj.Quantity,
-                };
-
+                //RecipeClass newRecipe = context.Recipes.Single(c => c.RecId == obj.RecId);
                 TagsClass t = new TagsClass
                 {
                     TagName = obj.TagName
                 };
-
-                context.Recipes.Add(r);
-                context.Instructions.Add(inst);
-                context.Ingredients.Add(ing);
-                context.IngQuant.Add(ingQ);
                 context.Tags.Add(t);
                 context.SaveChanges();
+
+
+                RecipeClass r = new RecipeClass
+                {
+                    RecName = obj.RecName,
+                    TagsId = t.Id, 
+                    UserId = uid2 
+                    //Calories = obj.Calories
+                };
+                context.Recipes.Add(r);
+                context.SaveChanges();
+                                            
+                             
+                InstructionsClass inst = new InstructionsClass
+                {   
+                    RecipeClassId = r.Id,
+                    StepOrder = obj.StepOrder,
+                    Instruct = obj.Instruct
+                };
+                context.Instructions.Add(inst);
+                context.SaveChanges();
+                              
+                IngredientsClass ing = new IngredientsClass
+                { 
+                    IngName = obj.IngName,
+                    UM = obj.UM
+                    //Id = ingQ.Id
+                };
+                context.Ingredients.Add(ing);
+                context.SaveChanges();
+
+                IngQuantClass ingQ = new IngQuantClass
+                {
+                    RecipeClassId = r.Id,
+                    IngredientsClassId = ing.Id,
+                    Quantity = obj.Quantity
+                    
+                };
+                context.IngQuant.Add(ingQ);
+                context.SaveChanges();
+
+                ViewBag.message = "Recipe created";
                 
                 return Redirect("/Index");
             }   

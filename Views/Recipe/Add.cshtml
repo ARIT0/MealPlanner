@@ -1,0 +1,64 @@
+﻿@model MealPlanner.ViewModels.NewRecipeVM
+
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add</h1>
+
+<h4>NewRecipeVM</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Add">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RecName" class="control-label"></label>
+                <input asp-for="RecName" class="form-control" />
+                <span asp-validation-for="RecName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IngName" class="control-label"></label>
+                <input asp-for="IngName" class="form-control" />
+                <span asp-validation-for="IngName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UM" class="control-label"></label>
+                <input asp-for="UM" class="form-control" />
+                <span asp-validation-for="UM" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StepOrder" class="control-label"></label>
+                <input asp-for="StepOrder" class="form-control" />
+                <span asp-validation-for="StepOrder" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Instruct" class="control-label"></label>
+                <input asp-for="Instruct" class="form-control" />
+                <span asp-validation-for="Instruct" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TagName" class="control-label"></label>
+                <input asp-for="TagName" class="form-control" />
+                <span asp-validation-for="TagName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <b>@ViewBag.message</b>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
