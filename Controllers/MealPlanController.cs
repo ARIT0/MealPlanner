@@ -46,9 +46,51 @@ namespace MealPlanner.Controllers
             
         }
 
-        public IActionResult ShoppingList()
+        [HttpPost]
+        public JsonResult SaveMeal(MealsClass m)
+        {
+            var status = false;
+
+            if (m.Id > 0)
+            {
+                //Update the event
+                var v = context.Meals.Where(a => a.Id == m.Id).FirstOrDefault();
+                if (v != null)
+                {
+                    v.MealType = m.MealType;
+                    v.Date = m.Date;
+                }
+            }
+            else
+            {
+                context.Meals.Add(m);
+            }
+            context.SaveChanges();
+            status = true;
+            
+            return new JsonResult (new{ Data =  status });
+        }
+
+        [HttpPost]
+        public JsonResult DeleteMeal(int mealId)
+        {
+            var status = false;
+            
+            var v = context.Meals.Where(a => a.Id == mealId).FirstOrDefault();
+            if (v != null)
+            {
+                context.Meals.Remove(v);
+                context.SaveChanges();
+                status = true;
+            }
+            
+            return new JsonResult (new { Data = status  });
+        }
+
+
+        /*public IActionResult ShoppingList()
         {
 
-        }
+        }*/
     }
 }

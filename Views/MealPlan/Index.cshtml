@@ -10,9 +10,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title"><span id="eventTitle"></span></h4>
+                <h4 class="modal-title"><span id="mealTitle"></span></h4>
             </div>
             <div class="modal-body">
+                
+                <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                    <span class="glyphicon glyphicon-remove"></span> Remove
+                </button>
+                <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                </button>
+
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
@@ -21,37 +29,106 @@
         </div>
     </div>
 </div>
+
+
+<div id="myModalSave" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Save Meal</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <input type="hidden" id="hdMealId" value="0" />
+                    <div class="form-group">
+                        <label>Recipe Name</label>
+                        <input type="text" id="txtRecName" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <div class="input-group date" id="dtp1">
+                            <input type="text" id="txtDate" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day event</label>
+                        </div>
+                    </div>
+                   <!-- <div class="form-group" id="divEndDate" style="display:none">
+                        <label>End</label>
+                        <div class="input-group date" id="dtp2">
+                            <input type="text" id="txtEnd" class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>-->
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="txtDescription" rows="3" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Meal Type</label>
+                        <select id="ddMealTypeColor" class="form-control">
+                            <option value="">Default</option>
+                            <option value="red">Breakfast</option>
+                            <option value="blue">Lunch</option>
+                            <option value="black">Snack</option>
+                            <option value="green">Dinner</option>
+                        </select>
+                    </div>
+                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
  
 <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" rel="stylesheet" />
 <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print"/>
- 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" /> 
+
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
- 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script> 
+
     <script>
         $(document).ready(function () {
-            var events = [];
-            $.ajax({
-                type: "GET",
-                url: "/MealPlan/GetMeals",
-                success: function (data) {
-                    $.each(data, function (i, v) {
-                        events.push({
-                            title: v.RecipeId,
-                            meal: v.MealType,
-                            start: moment(v.Date)
-                        });
-                    })
+            var meals = [];
+            var selectedMeal = null;
+            FetchMealAndRenderCalendar();
+            function FetchMealAndRenderCalendar() {
+                meals = [];
+                $.ajax({
+                    type: "GET",
+                    url: "/MealPlan/GetMeals",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            meals.push({
+                                mealId: v.MealId,
+                                title: v.RecipeId,
+                                meal: v.MealType,
+                                date: moment(v.Date)
+                            });
+                        })
+
+                        GenerateCalender(meals);
+                    },
+                    error: function (error) {
+                        alert('failed');
+                    }
+                })
+            }
  
-                    GenerateCalender(events);
-                },
-                error: function (error) {
-                    alert('failed');
-                }
-            })
- 
-            function GenerateCalender(events) {
+            function GenerateCalender(meals) {
                 $('#calender').fullCalendar('destroy');
                 $('#calender').fullCalendar({
                     contentHeight: 400,
@@ -60,25 +137,162 @@
                     header: {
                         left: 'prev,next today',
                         center: 'title',
-                        right: 'month,basicWeek,basicDay,agenda'
+                        right: 'month,basicWeek,basicDay,shopping list'
                     },
-                    eventLimit: true,
-                    eventColor: '#378006',
-                    events: events,
-                    eventClick: function (calEvent, jsEvent, view) {                       
-                        $('#myModal #eventTitle').text(calEvent.title);
+                    mealLimit: true,
+                    mealColor: '#378006',
+                    meals: meals,
+                    mealClick: function (calMeal, jsMeal, view) {    
+                        selectedMeal = calMeal;
+                        $('#myModal #eealTitle').text(calMeal.title);
                         var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
-                        if (calEvent.end != null) {
-                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                        $description.append($('<p/>').html('<b>Date:</b>' + calMeal.date.format("DD-MMM-YYYY HH:mm a")));
+                        if (calMeal.end != null) {
+                            $description.append($('<p/>').html('<b>End:</b>' + calMeal.end.format("DD-MMM-YYYY HH:mm a")));
                         }
-                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                        $description.append($('<p/>').html('<b>Description:</b>' + calMeal.description));
                         $('#myModal #pDetails').empty().html($description);
  
                         $('#myModal').modal();
+                    },
+
+
+                    selectable: true,
+                    select: function (date) {
+                        selectedMeal = {
+                            mealId: 0,
+                            title: '',
+                            description: '',//get information from recipe
+                            date: date,
+                            //end: end,
+                            //allDay: false,
+                            color: ''
+                        };
+                        openAddEditForm();
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    editable: true,
+                    mealDrop: function (meal) {
+                        var data = {
+                            MealId: meal.mealId,
+                            RecName: meal.title,
+                            Date: event.date.format('DD/MM/YYYY HH:mm A'),
+                            //End: event.end != null ? event.end.format('DD/MM/YYYY HH:mm A') : null,
+                            Description: event.description,
+                            ThemeColor: event.color,
+                            //IsFullDay: event.allDay
+                        };
+                        SaveMeal(data);
+                    }
+
+                })
+            }
+
+
+            $('#btnEdit').click(function () {
+                //Open modal dialog for edit event
+                openAddEditForm();
+            })
+            $('#btnDelete').click(function () {
+                if (selectedMeal != null && confirm('Are you sure?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/home/DeleteMeal',
+                        data: { 'mealId': selectedMeal.mealId },
+                        success: function (data) {
+                            if (data.status) {
+                                //Refresh the calender
+                                FetchMealAndRenderCalendar();
+                                $('#myModal').modal('hide');
+                            }
+                        },
+                        error: function () {
+                            alert('Failed');
+                        }
+                    })
+                }
+            })
+            $('#dtp1,#dtp2').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm A'
+            });
+            $('#chkIsFullDay').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#divEndDate').hide();
+                }
+                else {
+                    $('#divEndDate').show();
+                }
+            });
+            function openAddEditForm() {
+                if (selectedMeal != null) {
+                    $('#hdMealId').val(selectedMeal.mealId);
+                    $('#txtRecName').val(selectedMeal.title);
+                    $('#txtDate').val(selectedMeal.date.format('DD/MM/YYYY HH:mm A'));
+                    //$('#chkIsFullDay').prop("checked", selectedMeal.allDay || false);
+                    //$('#chkIsFullDay').change();
+                    //$('#txtEnd').val(selectedMeal.end != null ? selectedMeal.end.format('DD/MM/YYYY HH:mm A') : '');
+                    $('#txtDescription').val(selectedMeal.description);
+                    $('#ddThemeColor').val(selectedMeal.color);
+                }
+                $('#myModal').modal('hide');
+                $('#myModalSave').modal();
+            }
+            $('#btnSave').click(function () {
+                //Validation/
+                if ($('#txtRecName').val().trim() == "") {
+                    alert('Recipe required');
+                    return;
+                }
+                if ($('#txtDate').val().trim() == "") {
+                    alert('Start date required');
+                    return;
+                }
+
+                
+                /*if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
+                    alert('End date required');
+                    return;
+                }
+                else {
+                    var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
+                    var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+                    if (startDate > endDate) {
+                        alert('Invalid end date');
+                        return;
+                    }
+                }*/
+
+                var data = {
+                    MealId: $('#hdMealId').val(),
+                    RecName: $('#txtRecName').val().trim(),
+                    Date: $('#txtDate').val().trim(),
+                    //End: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
+                    Description: $('#txtDescription').val(),
+                    MealType: $('#ddMealTypeColor').val(),
+                    //IsFullDay: $('#chkIsFullDay').is(':checked')
+                }
+                SaveEvent(data);
+                // call function for submit data to the server 
+            })
+            function SaveMeal(data) {
+                $.ajax({
+                    type: "POST",
+                    url: '/MealPlan/SaveMeal',
+                    data: data,
+                    success: function (data) {
+                        if (data.status) {
+                            //Refresh the calender
+                            FetchMealAndRenderCalendar();
+                            $('#myModalSave').modal('hide');
+                        }
+                    },
+                    error: function () {
+                        alert('Failed');
                     }
                 })
             }
+
+
         })
     </script>
 }
