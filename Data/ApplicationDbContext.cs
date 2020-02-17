@@ -21,6 +21,7 @@ namespace MealPlanner.Data
         public DbSet<TagsClass> Tags { get; set; }
         public DbSet<IngredientsClass> Ingredients { get; set; }
         public DbSet<IngQuantClass> IngQuant { get; set; }
+        public DbSet<MealsClass> Meals { get; set; }
         
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext>options) : base(options)
         {

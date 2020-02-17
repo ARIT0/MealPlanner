@@ -1,0 +1,48 @@
+﻿@model IEnumerable<MealPlanner.Models.RecipeClass>
+
+@{
+    ViewData["Title"] = "PickMeals";
+}
+
+<h1>Pick Meals</h1>
+
+<p>
+    <a asp-action="PickMeals">All Recipes</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RecName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TagsClass.TagName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TagsClass.TagName)
+            </td>
+            <td>
+                <a asp-action="AddToPlan" asp-route-id="@item.Id">Add to Plan</a> |
+                <a asp-action="Date" asp-route-id="@item.Id">Date</a> |
+                <a asp-action="MealType" asp-route-id="@item.Id">Meal Type</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -23,8 +23,7 @@ namespace MealPlanner.Controllers
         {
             context = dbContext;
         }
-
-               
+                       
         //GET: All Recipes
         public IActionResult Index()
         {
@@ -71,7 +70,7 @@ namespace MealPlanner.Controllers
                              
                 InstructionsClass inst = new InstructionsClass
                 {   
-                    RecipeClassId = r.Id,
+                    RecipeId = r.Id,
                     StepOrder = obj.StepOrder,
                     Instruct = obj.Instruct
                 };

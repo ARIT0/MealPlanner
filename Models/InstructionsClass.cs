@@ -12,7 +12,7 @@ namespace MealPlanner.Models
         [Key]
         public int Id { get; set; }
 
-        public int RecipeClassId { get; set; }
+        public int RecipeId { get; set; }
         [ForeignKey("RecipeClassId")]
         public RecipeClass RecipeClass { get; set; }
         
